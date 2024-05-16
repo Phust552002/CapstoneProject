@@ -19,9 +19,9 @@ import { UserActions } from "../../stores/actions";
 const data = [
   {
     id: 1,
-    title: "Hủy gia hạn 3g/4g",
+    title: "Tự động tắt 3g/4g",
     description:
-      "Tự động kiểm tra và hủy gia hạn 3g/4g vào thời gian đã chọn\nb1 : Chọn thời gian hàng ngày bạn muốn hủy gia hạn ...\nb2: Chọn nhà mạng",
+      "Tự động kiểm tra và tắt 3g/4g vào thời gian đã chọn\nb1 : Chọn thời gian hàng ngày bạn muốn tắt ...",
     image: images.image3g4g,
   },
   {
