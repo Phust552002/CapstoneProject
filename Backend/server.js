@@ -1,5 +1,5 @@
 const express = require('express')
-const { execSync } = require('child_process');
+const { exec } = require('child_process');
 const path = require('path');
 var bodyParser = require('body-parser')
 
@@ -15,8 +15,8 @@ const tasksPath = path.join(__dirname,'tasks');
 
 
 app.post('/automate', async (req, res) => {
-  const { udid, serviceId, arguments: args } = req.body; // Destructure request body
-
+  const { serviceId, arguments: args } = req.body; // Destructure request body
+  res.setHeader('Content-Type', 'application/json');
   if (!tasks.hasOwnProperty(serviceId)) {
     return res.status(404).send('No serviceId found!');
   }
@@ -24,13 +24,22 @@ app.post('/automate', async (req, res) => {
   const taskFile = tasks[serviceId];
   const autoTasks = path.join(tasksPath, taskFile);
 
-  try {
-    execSync(`node ${autoTasks} ${udid} ${args}`);
-    res.status(200).send('File executed successfully.');
-  } catch (error) {
-    console.error(`Error executing file: ${error.message}`);
-    res.status(500).send('Error executing file.');
-  }
+  exec(`node ${autoTasks} ${args}`, (error, stdout, stderr) => {
+    if (error) {
+        //console.error(`Error executing Tasks: ${error.message}`);
+        // Return an appropriate error status code (e.g., 500 for internal server error)
+        res.status(500).send({error: 'Error executing tasks.', data: ""});
+        return;
+    }
+    if (stderr) {
+        //console.error(`Task execution error: ${stderr}`);
+        // Return an appropriate error status code (e.g., 500 for internal server error)
+        res.status(500).send({error:'Error executing task.', data: ""});
+        return;
+    }
+    // Return status code 200 (OK) to indicate success
+    res.status(200).send({error: "", data :'Task executed successfully.'});
+  });
 });
     // console.log(req.body);
     // res.status(200).send(req.body);

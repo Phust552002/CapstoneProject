@@ -23,20 +23,46 @@ interface Item3g4gProps {
   service?: any;
 }
 
+interface ApiResponseState {
+  error?: string; // Optional error message property
+  data?: any; // Placeholder for any potential data received from the API
+}
+
 export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
   const styles = useStyles(theme);
   const [days, setDays] = useState(data[0]);
   const [supplier, setSupplier] = useState(suppierData[0]);
   const { navigation } = useGetNavigation();
+  const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
 
-  const addSerivce = () => {
+  const addSerivce = async () => {
+    setApiResponse(null);
     dispatch(
       UserActions.setService3g4g.request({
         time: days,
         supplier: supplier,
       })
     );
+    try {
+      const response = await fetch('/automate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Phuc gets serviceId from firebase
+        body: JSON.stringify({
+          serviceId: 1, 
+          arguments: "",
+        }),
+      });
+      const data = await response.json();
+      setApiResponse({ error: "", data });
+    }
+    catch (error) {
+      console.error("Error adding service:", error);
+      setApiResponse({error: "Something went wrong", data:null});
+    }
     navigation.goBack();
   };
 

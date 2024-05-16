@@ -1,16 +1,12 @@
 const { remote } = require('webdriverio');
 
-const UDID = process.argv[2];
-
-const args = process.argv.slice(3);
+const args = process.argv.slice(2);
 
 const capabilities = {
     platformName: 'Android',
     'appium:automationName': 'UiAutomator2',
-    'appium:udid': UDID,
     // 'appium:appPackage': 'com.zing.zalo',
     // 'appium:appActivity': '.ui.ZaloLauncherActivity',
-    // 'appium:autoGrantPermissions' : true,
     'appium:noReset': true, // if not set, the app will lose all its login data
     'appium:fullReset': false,
 };

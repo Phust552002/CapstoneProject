@@ -1,14 +1,14 @@
 const { remote } = require('webdriverio');
 
-const UDID = process.argv[2];
+const args = process.argv.slice(2);
 
-const args = process.argv.slice(3);
 const capabilities = {
   platformName: 'Android',
   'appium:automationName': 'UiAutomator2',
-  'appium:udid': UDID,
   'appium:appPackage': 'com.android.settings',
   'appium:appActivity': '.Settings',
+  'appium:noReset': true, // if not set, the app will lose all its login data
+  'appium:fullReset': false,
 };
 const wdOpts = {
   hostname: process.env.APPIUM_HOST || 'localhost',

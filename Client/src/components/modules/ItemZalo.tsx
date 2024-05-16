@@ -18,18 +18,44 @@ interface ItemZaloProps {
   service?: any;
 }
 
+interface ApiResponseState {
+  error?: string; // Optional error message property
+  data?: any; // Placeholder for any potential data received from the API
+}
+
 export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
   const styles = useStyles(theme);
   const [days, setDays] = useState(data[0]);
   const { navigation } = useGetNavigation();
+  const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
 
-  const addSerivce = () => {
+  const addSerivce = async () => {
+    setApiResponse(null);
     dispatch(
       UserActions.setServiceZalo.request({
         time: days,
       })
     );
+    try {
+      const response = await fetch('/automate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Phuc gets serviceId from firebase
+        body: JSON.stringify({
+          serviceId: 2,
+          arguments: "",
+        }),
+      });
+      const data = await response.json();
+      setApiResponse({ error: "", data });
+    }
+    catch (error) {
+      console.error("Error adding service:", error);
+      setApiResponse({error: "Something went wrong", data:null});
+    }
     navigation.goBack();
   };
   useEffect(() => {
