@@ -46,7 +46,7 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
       })
     );
     try {
-      const response = await fetch('/automate', {
+      const response = await fetch('https://neutral-seemingly-shepherd.ngrok-free.app/automate', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

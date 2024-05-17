@@ -39,7 +39,7 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
       })
     );
     try {
-      const response = await fetch('https://ideal-noticeably-wasp.ngrok-free.app/automate', {
+      const response = await fetch('https://neutral-seemingly-shepherd.ngrok-free.app/automate', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -7,24 +7,48 @@ import { makeStyles } from "react-native-elements";
 import { useGetNavigation } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import { useEffect, useState } from "react";
+import * as Device from "expo-device";
 
 interface ItemFontProps {
   isEdit?: boolean;
   service?: any;
 }
-
+interface ApiResponseState {
+  error?: string; // Optional error message property
+  data?: any; // Placeholder for any potential data received from the API
+}
 export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
   const styles = useStyles(theme);
   const { navigation } = useGetNavigation();
   const [size, setSize] = useState(service ? service.size : 40);
+  const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
 
-  const addSerivce = () => {
+  const addSerivce = async () => {
     dispatch(
       UserActions.setServiceFont.request({
         size: size,
       })
     );
+    try {
+      const response = await fetch('https://neutral-seemingly-shepherd.ngrok-free.app/automate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Phuc gets serviceId from firebase
+        body: JSON.stringify({
+          serviceId: 3, 
+          arguments: Device.manufacturer + " "+ "2.0" ,
+        }),
+      });
+      const data = await response.json();
+      setApiResponse({ error: "", data });
+    }
+    catch (error) {
+      console.error("Error adding service:", error);
+      setApiResponse({error: "Something went wrong", data:null});
+    }
     navigation.goBack();
   };
 

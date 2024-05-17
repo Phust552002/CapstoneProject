@@ -2,6 +2,10 @@ const { remote } = require('webdriverio');
 
 const args = process.argv.slice(2);
 
+const deviceManufacturer = args[0];
+
+var fontValue = args[1];
+
 const capabilities = {
   platformName: 'Android',
   'appium:automationName': 'UiAutomator2',
@@ -17,7 +21,7 @@ const wdOpts = {
   capabilities,
 };
 
-async function changeFont(fontValue) {
+async function changeFont() {
   const driver = await remote(wdOpts);
   try {
     
@@ -46,4 +50,4 @@ async function changeFont(fontValue) {
   }
 }
 
-changeFont(args).catch(console.error);
+changeFont().catch(console.error);
