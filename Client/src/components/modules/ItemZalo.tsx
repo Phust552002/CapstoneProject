@@ -38,12 +38,12 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
       })
     );
     try {
-      const response = await fetch('/automate', {
+      const response = await fetch('https://ideal-noticeably-wasp.ngrok-free.app/automate', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // Phuc gets serviceId from firebase
+        // Phuc gets serviceId from localstore
         body: JSON.stringify({
           serviceId: 2,
           arguments: "",

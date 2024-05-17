@@ -136,6 +136,7 @@ export const HomeScreen = () => {
         data={serviceData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <Item item={item} getData={getData} />}
+        contentContainerStyle={{paddingBottom: 100}}
       />
     </View>
   );
