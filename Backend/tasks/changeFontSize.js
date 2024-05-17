@@ -20,6 +20,7 @@ const wdOpts = {
 async function changeFont(fontValue) {
   const driver = await remote(wdOpts);
   try {
+    
     // Available Font values: 0.0 1.0 2.0 3.0 4.0 5.0 6.0
     fontValue = Number(fontValue);
         

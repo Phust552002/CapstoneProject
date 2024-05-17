@@ -6,6 +6,7 @@ import { HookHelper, Mixin } from "../../helpers";
 import AppText from "../atoms/AppText";
 import { useGetNavigation } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
+import * as Device from "expo-device";
 const data = [
   { label: "XÓA NGAY", value: "1" },
   { label: "HÀNG NGÀY", value: "2" },
@@ -46,7 +47,7 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
         // Phuc gets serviceId from firebase
         body: JSON.stringify({
           serviceId: 2,
-          arguments: "",
+          arguments: Device.manufacturer,
         }),
       });
       const data = await response.json();

@@ -6,6 +6,7 @@ import AppText from "../atoms/AppText";
 import { useEffect, useState } from "react";
 import { useGetNavigation } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
+import * as Device from "expo-device";
 const data = [
   { label: "TẮT/MỞ NGAY", value: "1" },
   { label: "HÀNG NGÀY", value: "2" },
@@ -53,7 +54,7 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
         // Phuc gets serviceId from firebase
         body: JSON.stringify({
           serviceId: 1, 
-          arguments: "",
+          arguments: Device.manufacturer,
         }),
       });
       const data = await response.json();
