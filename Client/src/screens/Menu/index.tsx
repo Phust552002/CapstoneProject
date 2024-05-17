@@ -35,12 +35,18 @@ const data = [
     description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
     image: images.font,
   },
-  // {
-  //   id: 4,
-  //   title: "Điều chỉnh cỡ chữ",
-  //   description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
-  //   image: images.font,
-  // },
+  {
+    id: 4,
+    title: "Điều chỉnh cỡ chữ",
+    description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
+    image: images.font,
+  },
+  {
+    id: 5,
+    title: "Điều chỉnh cỡ chữ",
+    description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
+    image: images.font,
+  },
 ];
 
 const Item = (item: any) => {
@@ -76,21 +82,25 @@ export const MenuScreen = () => {
   const { theme, dispatch } = HookHelper.useBaseHook();
   const [searchText, setSearchText] = React.useState("");
   const [filteredData, setFilteredData] = useState(data);
+  const { navigation } = useGetNavigation();
 
   const styles = useStyles(theme);
-  const handleSearch = (text: string) => {
-    const newData = data.filter((item) => {
-      const itemData = item.title.toUpperCase();
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-    setSearchText(text);
-    setFilteredData(newData);
+  // const handleSearch = (text: string) => {
+  //   const newData = data.filter((item) => {
+  //     const itemData = item.title.toUpperCase();
+  //     const textData = text.toUpperCase();
+  //     return itemData.indexOf(textData) > -1;
+  //   });
+  //   setSearchText(text);
+  //   setFilteredData(newData);
+  // };
+  const goBackToHome = () => {
+    navigation.navigate('Home');
   };
 
   return (
     <View style={{ ...styles.container, flex: 1 }}>
-      <AppHeader title={""} />
+      <AppHeader title={""} onPressLeft={goBackToHome} />
       <AppText style={styles.title}>Hệ thống</AppText>
 
       {/* <View style={styles.searchContainer}>
@@ -110,6 +120,7 @@ export const MenuScreen = () => {
           <Item {...item} />
         )}
         style={{flex: 1}} 
+        contentContainerStyle={{paddingBottom: 100}}
       />
     </View>
   );

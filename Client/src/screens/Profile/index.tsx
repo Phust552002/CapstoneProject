@@ -5,6 +5,9 @@ import useStyles from "./styles";
 import AppButton from "../../components/atoms/Button";
 import { AuthenticationActions } from "../../stores/actions";
 import { useGetNavigation } from "../../helpers/hookHelper";
+import AppHeader from "../../components/atoms/Header";
+import AppText from "../../components/atoms/AppText";
+
 
 export const ProfileScreen = () => {
   const { theme, dispatch } = HookHelper.useBaseHook();
@@ -46,6 +49,9 @@ export const ProfileScreen = () => {
   };
   return (
     <View style={styles.container}>
+      {/* <AppHeader title={""} />
+      <AppText style={styles.title}>Hệ thống</AppText> */}
+
       <AppButton title="Thoát ứng dụng" onPress={handleExitApp} />
       <AppButton title="Đăng xuất" onPress={handleLogout} />
       <AppButton
