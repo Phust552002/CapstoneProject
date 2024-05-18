@@ -4,7 +4,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { makeStyles } from "react-native-elements";
 import { HookHelper, Mixin } from "../../helpers";
 import AppText from "../atoms/AppText";
-import { useGetNavigation } from "../../helpers/hookHelper";
+import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import * as Device from "expo-device";
 const data = [
@@ -30,9 +30,12 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
   const [days, setDays] = useState(data[0]);
   const { navigation } = useGetNavigation();
   const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
+  const { showLoading, hideLoading } = useBaseHook();
 
   const addSerivce = async () => {
+    showLoading();
     setApiResponse(null);
+
     dispatch(
       UserActions.setServiceZalo.request({
         time: days,
@@ -50,10 +53,15 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
           arguments: Device.manufacturer,
         }),
       });
+      hideLoading();
+
       const data = await response.json();
       setApiResponse({ error: "", data });
     }
+    
     catch (error) {
+      hideLoading();
+
       console.error("Error adding service:", error);
       setApiResponse({error: "Something went wrong", data:null});
     }
