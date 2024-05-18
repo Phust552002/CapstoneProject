@@ -41,7 +41,7 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         // Phuc gets serviceId from firebase
         body: JSON.stringify({
           serviceId: 3, 
-          arguments: Device.manufacturer + " "+ "2.0" ,
+          arguments: Device.manufacturer + " " +  size,
         }),
       });      hideLoading();
 

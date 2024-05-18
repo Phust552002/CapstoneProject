@@ -50,7 +50,7 @@ async function check3G() {
                         ]
                     }
                 ]
-            );
+            );//swiping the screen 
     
             const bluetoothItem = await driver.$('//*[contains(@content-desc, "Bluetooth") and contains(@content-desc, "On.") or contains(@content-desc, "Off.")]');
             const bluetoothMode = await bluetoothItem.getAttribute('content-desc');
