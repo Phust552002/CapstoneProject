@@ -19,7 +19,7 @@ const wdOpts = {
 };
 
 async function check3G() {
-
+    
     const driver = await remote(wdOpts);
     try {
         if (deviceManufacturer ==  'samsung'){
@@ -59,7 +59,26 @@ async function check3G() {
             }
             await driver.execute('mobile: pressKey', { keycode: 4 });// press Back button in Android
         }
-        
+        else if (deviceManufacturer == "Xiaomi") {
+            const appPackage = 'com.android.settings';
+            const appActivity = '.MainSettings';
+            await driver.startActivity(appPackage, appActivity);
+            const searchbar = await driver.$('//*[@content-desc="Search"]');
+            await searchbar.click();
+            const search_send = await driver.$('//*[@content-desc="Search"]')
+            await search_send.setValue("Mobile data");
+            const mobileSearch = await driver.$('//*[@resource-id="com.android.settings:id/search_result"]/android.widget.LinearLayout[1]');
+            await mobileSearch.click();
+            const mobileToggle = await driver.$('//*[@resource-id="android:id/checkbox"]');
+            var attMobile = await mobileToggle.getAttribute('checked');
+            console.log(attMobile);
+            // if is ON, toggle the switch
+            if (attMobile == "true") {
+                await mobileToggle.click();
+            }
+            await driver.pause(1000);
+            await driver.terminateApp(appPackage);
+        }
     } finally {
         await driver.pause(1000);
         await driver.deleteSession();

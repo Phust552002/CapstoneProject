@@ -30,19 +30,17 @@ async function deleteZaloCache() {
         const hasZalo = await driver.isAppInstalled(appPackage);
 
         if (hasZalo) {
-            if (deviceManufacturer == "samsung") {
-                await driver.startActivity(appPackage, appActivity);
-                const profileTab = await driver.$('//*[@resource-id="com.zing.zalo:id/maintab_metab"]');
-                await profileTab.click();
-                const dataOnDevice = await driver.$('//*[@resource-id="com.zing.zalo:id/recyclerView"]/android.widget.LinearLayout[4]');
-                await dataOnDevice.click();
-                const clearCacheBtn = await driver.$('//*[@resource-id="com.zing.zalo:id/btn_clean_cache"]');
-                await clearCacheBtn.click();
-                const clearConfirm = await driver.$('//*[@resource-id="com.zing.zalo:id/btn_positive_modal"]');
-                await clearConfirm.click();
-            }
-            
-        }
+            await driver.startActivity(appPackage, appActivity);
+            const profileTab = await driver.$('//*[@resource-id="com.zing.zalo:id/maintab_metab"]');
+            await profileTab.click();
+            const dataOnDevice = await driver.$('//*[@resource-id="com.zing.zalo:id/recyclerView"]/android.widget.LinearLayout[4]');
+            await dataOnDevice.click();
+            const clearCacheBtn = await driver.$('//*[@resource-id="com.zing.zalo:id/btn_clean_cache"]');
+            await clearCacheBtn.click();
+            const clearConfirm = await driver.$('//*[@resource-id="com.zing.zalo:id/btn_positive_modal"]');
+            await clearConfirm.click();
+         }
+
         else {
             console.log("Zalo has not been installed!")
         }
