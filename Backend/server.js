@@ -34,11 +34,15 @@ app.post('/automate', async (req, res) => {
     if (stderr) {
         //console.error(`Task execution error: ${stderr}`);
         // Return an appropriate error status code (e.g., 500 for internal server error)
-        res.status(500).send({error:'Error executing task.', data: ""});
+        stderr = stderr.trimEnd();
+        res.status(500).send({error: stderr, data: ""});
         return;
     }
+    // if (stdout) {
+    //   if (stdout == "Zalo chưa được tải!") res.status(404).send({error: "Zalo chưa được tải", data:""});
+    // }
     // Return status code 200 (OK) to indicate success
-    res.status(200).send({error: "", data :'Task executed successfully.'});
+    res.status(200).send({error: "", data :'Tự động hóa thành công!'});
   });
 });
     // console.log(req.body);

@@ -59,7 +59,7 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           {isEdit ? "Thay đổi" : "Chọn"} cỡ chữ:
         </AppText>
 
-        <SliderContainer sliderValue={[size]} trackMarks={[0, 20, 40, 60,80, 100]}>
+        <SliderContainer sliderValue={[size]} trackMarks={[0, 20, 40, 60, 80, 100]}>
           <Slider
             onSlidingComplete={(value) => {
               setSize(value[0]);

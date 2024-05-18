@@ -2,8 +2,6 @@ const { remote } = require('webdriverio');
 
 const args = process.argv.slice(2);
 
-const deviceManufacturer = args[0];
-
 const capabilities = {
     platformName: 'Android',
     'appium:automationName': 'UiAutomator2',
@@ -42,50 +40,17 @@ async function deleteZaloCache() {
          }
 
         else {
-            console.log("Zalo has not been installed!")
+            throw "Zalo chưa được tải!";
+            // console.log("Zalo has not been installed!")
         }
         
-        // Start navigating in the zalo app
-
-        
-        // await driver.executeScript("mobile: pressKey", [{ "keycode": 3 }]);
-
-        // await driver.performActions([
-        //     {
-        //         type: 'pointer',
-        //         id: 'touch',
-        //         parameters: { pointerType: 'touch' },
-        //         actions: [
-        //             { type: 'pointerMove', duration: 0, x: 508, y: 1436 },
-        //             { type: 'pointerDown', button: 0 },
-        //             { type: 'pause', duration: 300 },
-        //             { type: 'pointerMove', duration: 1000, x: 508, y: 29 },
-        //             { type: 'pointerUp', button: 0 }
-        //         ]
-        //     }
-        // ])
-
-        // var phoneScreens = await driver.$$(
-        //     '//*[contains(@resource-id,"com.sec.android.app.launcher:id/") and contains(@resource-id,"active") or contains(@resource-id, "inactive")]'
-        // );
-
-        // for await (const phoneScreen of phoneScreens) {
-        //     // Look for the App
-        //     await phoneScreen.click();
-        //     phoneScreens = await driver.$$(
-        //         '//*[contains(@resource-id,"com.sec.android.app.launcher:id/") and contains(@resource-id,"active") or contains(@resource-id, "inactive")]'
-        //     );
-        //     let application = await driver.$('//*[@content-desc="YouTube"]');
-
-        //     if (await application.isExisting()) {
-        //         await application.click();
-        //         break;
-        //     }
-        //     else continue;
-        // }
         await driver.pause(3000);
         await driver.terminateApp(appPackage);
-    } finally {
+    }
+    // catch(err) {
+    //     console.log(err);
+    // }
+    finally {
         await driver.pause(1000);
         await driver.deleteSession();
     }
