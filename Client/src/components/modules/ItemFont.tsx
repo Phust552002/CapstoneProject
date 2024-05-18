@@ -4,7 +4,7 @@ import AppText from "../atoms/AppText";
 import { SliderContainer } from "./SliderContainer";
 import { Slider } from "@miblanchard/react-native-slider";
 import { makeStyles } from "react-native-elements";
-import { useGetNavigation } from "../../helpers/hookHelper";
+import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import { useEffect, useState } from "react";
 import * as Device from "expo-device";
@@ -21,10 +21,12 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
   const styles = useStyles(theme);
   const { navigation } = useGetNavigation();
-  const [size, setSize] = useState(service ? service.size : 40);
+  const [size, setSize] = useState(service ? service.size : 2.0);
   const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
+  const { showLoading, hideLoading } = useBaseHook();
 
   const addSerivce = async () => {
+    showLoading();
     dispatch(
       UserActions.setServiceFont.request({
         size: size,
@@ -41,11 +43,13 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           serviceId: 3, 
           arguments: Device.manufacturer + " "+ "2.0" ,
         }),
-      });
+      });      hideLoading();
+
       const data = await response.json();
       setApiResponse({ error: "", data });
     }
     catch (error) {
+      hideLoading();
       console.error("Error adding service:", error);
       setApiResponse({error: "Something went wrong", data:null});
     }
@@ -59,10 +63,11 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           {isEdit ? "Thay đổi" : "Chọn"} cỡ chữ:
         </AppText>
 
-        <SliderContainer sliderValue={[size]} trackMarks={[0, 20, 40, 60, 80, 100]}>
+        <SliderContainer sliderValue={[size*20]} trackMarks={[0, 20, 40, 60,80, 100]}>
           <Slider
             onSlidingComplete={(value) => {
-              setSize(value[0]);
+              const newValue = (Math.round(value[0] / 20)).toFixed(1); 
+              setSize(parseFloat(newValue));
             }}
             maximumValue={100}
             minimumValue={0}
