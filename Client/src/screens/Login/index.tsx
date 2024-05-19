@@ -120,7 +120,7 @@ export const LoginScreen = () => {
         </TouchableOpacity>
       </View>
       <ErrorModal
-        confirmTitle={"Try again"}
+        confirmTitle={"Thử lại"}
         onConfirm={() => tryAgain()}
         isVisible={showError}
         title={error?.title || ""}

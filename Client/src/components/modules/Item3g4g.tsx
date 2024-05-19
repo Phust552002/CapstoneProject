@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import * as Device from "expo-device";
-
+import { ErrorModal } from "../../components/atoms/ErrorModal";
+import { SuccessModal } from "../atoms/SuccessModal";
 
 
 const data = [
@@ -40,10 +41,11 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
   const { navigation } = useGetNavigation();
   const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
   const { showLoading, hideLoading } = useBaseHook();
-
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [message, setMessage] = useState<{ title: string; description?: string }>();
   const addSerivce = async () => {
     showLoading();
-    setApiResponse(null);
     
     dispatch(
       UserActions.setService3g4g.request({
@@ -65,14 +67,32 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
       });
       hideLoading();
       const data = await response.json();
-      setApiResponse({ error: "", data });
+      if (data.error == "") {
+        setShowSuccess(true);
+        setMessage({
+          title: "Tự động hóa thành công",
+          description: '3G/4G hiện đã được tắt',
+        });
+      }
+      else {
+        setShowError(true);
+        setMessage({
+          title: "Tự động hóa thất bại",
+          description: data.error,
+        });
+      }
     }
     catch (error) {
       hideLoading();
+      setShowError(true);
+      setMessage({
+        title: "Tự động hóa thất bại",
+        description: String(error),
+      });
       console.error("Error adding service:", error);
-      setApiResponse({error: "Something went wrong", data:null});
+      
     }
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   useEffect(() => {
@@ -138,6 +158,22 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
           </TouchableOpacity>
         </View>
       )}
+      <View style={styles.container}>
+        <ErrorModal
+          confirmTitle={"Đã hiểu"}
+          onConfirm={() => navigation.goBack()}
+          isVisible={showError}
+          title={message?.title || ""}
+          description={message?.description}
+        />
+        <SuccessModal
+          confirmTitle={"Đã hiểu"}
+          onConfirm={() => navigation.goBack()}
+          isVisible={showSuccess}
+          title={message?.title || ""}
+          description={message?.description}
+        />
+      </View>
     </View>
   );
 };
@@ -183,5 +219,12 @@ const useStyles = makeStyles((theme) => ({
     height: Mixin.moderateSize(50),
     justifyContent: "center",
     alignItems: "center",
+  },
+  container: {
+    paddingHorizontal: Mixin.moderateSize(28),
+    width: "100%",
+    backgroundColor: theme.colors?.white,
+    flex: 1,
+    paddingTop: Mixin.moderateSize(60),
   },
 }));

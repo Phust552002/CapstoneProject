@@ -11,7 +11,7 @@ export const profileIcon = require("./profile_icon.png");
 export const closeIcon = require("./icon-close.png");
 
 export const error = require("./error.png");
-
+export const success = require("./success.png");
 
 export const radio = require("./radio.png");
 export const radioSelected = require("./radio_select.png");

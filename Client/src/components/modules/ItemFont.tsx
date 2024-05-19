@@ -8,6 +8,8 @@ import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import { useEffect, useState } from "react";
 import * as Device from "expo-device";
+import { ErrorModal } from "../atoms/ErrorModal";
+import { SuccessModal } from "../atoms/SuccessModal";
 
 interface ItemFontProps {
   isEdit?: boolean;
@@ -24,7 +26,9 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const [size, setSize] = useState(service ? service.size : 2.0);
   const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
   const { showLoading, hideLoading } = useBaseHook();
-
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [message, setMessage] = useState<{ title: string; description?: string }>();
   const addSerivce = async () => {
     showLoading();
     dispatch(
@@ -43,17 +47,36 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           serviceId: 3, 
           arguments: Device.manufacturer + " " +  size,
         }),
-      });      hideLoading();
+      });      
+      hideLoading();
 
       const data = await response.json();
-      setApiResponse({ error: "", data });
+      if (data.error == "") {
+        setShowSuccess(true);
+        setMessage({
+          title: "Tự động hóa thành công",
+          description: 'Bạn đã thay đổi cỡ chữ thành công',
+        });
+      }
+      else {
+        setShowError(true);
+        setMessage({
+          title: "Tự động hóa thất bại",
+          description: data.error,
+        });
+      }
     }
     catch (error) {
       hideLoading();
+      setShowError(true);
+      setMessage({
+        title: "Tự động hóa thất bại",
+        description: String(error),
+      });
       console.error("Error adding service:", error);
-      setApiResponse({error: "Something went wrong", data:null});
+      
     }
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   return (
@@ -116,7 +139,24 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           </TouchableOpacity>
         </View>
       )}
+      <View style={styles.container}>
+        <ErrorModal
+          confirmTitle={"Đã hiểu"}
+          onConfirm={() => navigation.goBack()}
+          isVisible={showError}
+          title={message?.title || ""}
+          description={message?.description}
+        />
+        <SuccessModal
+          confirmTitle={"Đã hiểu"}
+          onConfirm={() => navigation.goBack()}
+          isVisible={showSuccess}
+          title={message?.title || ""}
+          description={message?.description}
+        />
+      </View>
     </View>
+    
   );
 };
 
@@ -161,5 +201,12 @@ const useStyles = makeStyles((theme) => ({
     height: Mixin.moderateSize(50),
     justifyContent: "center",
     alignItems: "center",
+  },
+  container: {
+    paddingHorizontal: Mixin.moderateSize(28),
+    width: "100%",
+    backgroundColor: theme.colors?.white,
+    flex: 1,
+    paddingTop: Mixin.moderateSize(60),
   },
 }));

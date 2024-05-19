@@ -6,7 +6,9 @@ import { HookHelper, Mixin } from "../../helpers";
 import AppText from "../atoms/AppText";
 import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
-import * as Device from "expo-device";
+import { ErrorModal } from "../../components/atoms/ErrorModal";
+import { SuccessModal } from "../atoms/SuccessModal";
+
 const data = [
   { label: "XÓA NGAY", value: "1" },
   { label: "HÀNG NGÀY", value: "2" },
@@ -31,11 +33,12 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
   const { navigation } = useGetNavigation();
   const [ApiResponse, setApiResponse] = useState<ApiResponseState | null>(null);
   const { showLoading, hideLoading } = useBaseHook();
-
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [message, setMessage] = useState<{ title: string; description?: string }>();
   const addSerivce = async () => {
     showLoading();
-    setApiResponse(null);
-
+    
     dispatch(
       UserActions.setServiceZalo.request({
         time: days,
@@ -50,22 +53,39 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
         // Phuc gets serviceId from localstore
         body: JSON.stringify({
           serviceId: 2,
-          arguments: Device.manufacturer,
+          arguments: "",
         }),
       });
       hideLoading();
 
       const data = await response.json();
-      setApiResponse({ error: "", data });
+      if (data.error == "") {
+        setShowSuccess(true);
+        setMessage({
+          title: "Tự động hóa thành công",
+          description: 'Bạn đã xóa dữ liệu Cache của Zalo',
+        });
+      }
+      else {
+        setShowError(true);
+        setMessage({
+          title: "Tự động hóa thất bại",
+          description: data.error,
+        });
+      }
     }
     
     catch (error) {
       hideLoading();
-
+      setShowError(true);
+      setMessage({
+        title: "Tự động hóa thất bại",
+        description: String(error),
+      });
       console.error("Error adding service:", error);
-      setApiResponse({error: "Something went wrong", data:null});
+      
     }
-    navigation.goBack();
+    // navigation.goBack();
   };
   useEffect(() => {
     if (service) {
@@ -128,7 +148,25 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
           </TouchableOpacity>
         </View>
       )}
+      <View style={styles.container}>
+        <ErrorModal
+          confirmTitle={"Đã hiểu"}
+          onConfirm={() => navigation.goBack()}
+          isVisible={showError}
+          title={message?.title || ""}
+          description={message?.description}
+        />
+        <SuccessModal
+          confirmTitle={"Đã hiểu"}
+          onConfirm={() => navigation.goBack()}
+          isVisible={showSuccess}
+          title={message?.title || ""}
+          description={message?.description}
+        />
+      </View>
+      
     </View>
+    
   );
 };
 
@@ -173,5 +211,12 @@ const useStyles = makeStyles((theme) => ({
     height: Mixin.moderateSize(50),
     justifyContent: "center",
     alignItems: "center",
+  },
+  container: {
+    paddingHorizontal: Mixin.moderateSize(28),
+    width: "100%",
+    backgroundColor: theme.colors?.white,
+    flex: 1,
+    paddingTop: Mixin.moderateSize(60),
   },
 }));
