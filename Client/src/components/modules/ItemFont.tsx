@@ -8,6 +8,7 @@ import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import { useEffect, useState } from "react";
 import * as Device from "expo-device";
+import { useTask } from "../../helpers/features/task";
 import { ErrorModal } from "../atoms/ErrorModal";
 import { SuccessModal } from "../atoms/SuccessModal";
 
@@ -16,8 +17,8 @@ interface ItemFontProps {
   service?: any;
 }
 interface ApiResponseState {
-  error?: string; // Optional error message property
-  data?: any; // Placeholder for any potential data received from the API
+  error?: string;
+  data?: any;
 }
 export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
@@ -28,7 +29,15 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const { showLoading, hideLoading } = useBaseHook();
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [message, setMessage] = useState<{ title: string; description?: string }>();
+  const [error, setError] = useState<{ title: string; description?: string }>();
+  const [serviceName, setServiceName] = useState("");
+  const { onAddTask } = useTask();
+  const [note, setNote] = useState("");
+  const [noteError, setNoteError] = useState("");
+  const [message, setMessage] = useState<{
+    title: string;
+    description?: string;
+  }>();
   const addSerivce = async () => {
     showLoading();
     dispatch(
@@ -37,17 +46,19 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
       })
     );
     try {
-      const response = await fetch('https://neutral-seemingly-shepherd.ngrok-free.app/automate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Phuc gets serviceId from firebase
-        body: JSON.stringify({
-          serviceId: 3, 
-          arguments: Device.manufacturer + " " +  size,
-        }),
-      });      
+      const response = await fetch(
+        "https://ideal-noticeably-wasp.ngrok-free.app/automate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            serviceId: 3,
+            arguments: Device.manufacturer + " " + size,
+          }),
+        }
+      );
       hideLoading();
 
       const data = await response.json();
@@ -55,18 +66,34 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         setShowSuccess(true);
         setMessage({
           title: "Tự động hóa thành công",
-          description: 'Bạn đã thay đổi cỡ chữ thành công',
+          description: "Bạn đã thay đổi cỡ chữ thành công",
         });
-      }
-      else {
+        setServiceName("Font Editing Service");
+        setNote("Success");
+        setNoteError("");
+
+        await onAddTask({
+          serviceName: "Font Editing Service",
+          state: "Success",
+          error: "",
+        });
+      } else {
         setShowError(true);
         setMessage({
           title: "Tự động hóa thất bại",
           description: data.error,
         });
+        setServiceName("Font Editing Service");
+        setNote("Failure");
+        setNoteError(data.error);
+
+        await onAddTask({
+          serviceName: "Font Editing Service",
+          state: "Failure",
+          error: data.error,
+        });
       }
-    }
-    catch (error) {
+    } catch (error) {
       hideLoading();
       setShowError(true);
       setMessage({
@@ -74,9 +101,13 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         description: String(error),
       });
       console.error("Error adding service:", error);
-      
+
+      await onAddTask({
+        serviceName: "3G/4G Service",
+        state: "Error",
+        error: String(error),
+      });
     }
-    // navigation.goBack();
   };
 
   return (
@@ -86,10 +117,13 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           {isEdit ? "Thay đổi" : "Chọn"} cỡ chữ:
         </AppText>
 
-        <SliderContainer sliderValue={[size*20]} trackMarks={[0, 20, 40, 60,80, 100]}>
+        <SliderContainer
+          sliderValue={[size * 20]}
+          trackMarks={[0, 20, 40, 60, 80, 100]}
+        >
           <Slider
             onSlidingComplete={(value) => {
-              const newValue = (Math.round(value[0] / 20)).toFixed(1); 
+              const newValue = Math.round(value[0] / 20).toFixed(1);
               setSize(parseFloat(newValue));
             }}
             maximumValue={100}
@@ -156,7 +190,6 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         />
       </View>
     </View>
-    
   );
 };
 

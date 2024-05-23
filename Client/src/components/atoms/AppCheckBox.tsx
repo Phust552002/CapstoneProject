@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: 'transparent',
     padding: 0,
-    // marginTop: Mixin.moderateSize(16),
     margin: 0
   },
 });

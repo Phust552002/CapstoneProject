@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   FlatList,
   TextInput,
@@ -12,7 +12,7 @@ import useStyles from "./styles";
 import AppText from "../../components/atoms/AppText";
 import { useGetNavigation } from "../../helpers/hookHelper";
 import { Icon } from "react-native-elements";
-import AppHeader from "../../components/atoms/Header";  
+import AppHeader from "../../components/atoms/Header";
 import { images } from "../../../assets";
 
 const data = [
@@ -31,18 +31,6 @@ const data = [
   },
   {
     id: 3,
-    title: "Điều chỉnh cỡ chữ",
-    description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
-    image: images.font,
-  },
-  {
-    id: 4,
-    title: "Điều chỉnh cỡ chữ",
-    description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
-    image: images.font,
-  },
-  {
-    id: 5,
     title: "Điều chỉnh cỡ chữ",
     description: "Tự động phóng to hay thu nhỏ cỡ chữ trên điện thoại",
     image: images.font,
@@ -66,10 +54,17 @@ const Item = (item: any) => {
           <AppText h6>{title}</AppText>
         </View>
         <View style={styles.rowContainer}>
-          <TouchableOpacity style={styles.heartBtn}onPress={toggleHeart}>
-          <Icon name="heart" color={isLiked ? '#FF69B4' : '#9586A8'} size={20} />
+          <TouchableOpacity style={styles.heartBtn} onPress={toggleHeart}>
+            <Icon
+              name="heart"
+              color={isLiked ? "#FF69B4" : "#9586A8"}
+              size={20}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('AddService', {service: item})}>
+          <TouchableOpacity
+            style={styles.addBtn}
+            onPress={() => navigation.navigate("AddService", { service: item })}
+          >
             <Icon name="plus" type="feather" color={"white"} size={20} />
           </TouchableOpacity>
         </View>
@@ -83,44 +78,21 @@ export const MenuScreen = () => {
   const [searchText, setSearchText] = React.useState("");
   const [filteredData, setFilteredData] = useState(data);
   const { navigation } = useGetNavigation();
-
   const styles = useStyles(theme);
-  // const handleSearch = (text: string) => {
-  //   const newData = data.filter((item) => {
-  //     const itemData = item.title.toUpperCase();
-  //     const textData = text.toUpperCase();
-  //     return itemData.indexOf(textData) > -1;
-  //   });
-  //   setSearchText(text);
-  //   setFilteredData(newData);
-  // };
   const goBackToHome = () => {
-    navigation.navigate('Home');
+    navigation.navigate("Home");
   };
 
   return (
     <View style={{ ...styles.container, flex: 1 }}>
       <AppHeader title={""} onPressLeft={goBackToHome} />
       <AppText style={styles.title}>Hệ thống</AppText>
-
-      {/* <View style={styles.searchContainer}>
-        <Icon name="search" type="feather" color={"black"} size={20} />
-        <TextInput
-          style={styles.exploreSearchInput}
-          placeholder="Search"
-          value={searchText}
-          onChangeText={(text) => handleSearch(text)}
-        />
-      </View> */}
-
       <FlatList
         data={data}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Item {...item} />
-        )}
-        style={{flex: 1}} 
-        contentContainerStyle={{paddingBottom: 100}}
+        renderItem={({ item }) => <Item {...item} />}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </View>
   );

@@ -83,7 +83,12 @@ const ServiceFeedback = ({
   );
 };
 
-const ServiceImprove = ({ bottomSheetRef, note, setNote, addFeedback }: any) => {
+const ServiceImprove = ({
+  bottomSheetRef,
+  note,
+  setNote,
+  addFeedback,
+}: any) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
   const styles = useStyles(theme);
   return (
@@ -136,9 +141,9 @@ export const EditServiceScreen = () => {
   const [note, setNote] = useState("");
   const service = route.params.service;
   const styles = useStyles(theme);
-
   const { onAddFeedback } = useFeedback();
   const [showError, setShowError] = useState(false);
+
   const [error, setError] = useState<{ title: string; description?: string }>();
   const addFeedback = async () => {
     const response = await onAddFeedback({
@@ -153,6 +158,7 @@ export const EditServiceScreen = () => {
       });
       setFeedbackQuanlity(data[0]);
       setNote("");
+      navigation.goBack();
     } else {
       setTimeout(() => {
         setShowError(true);
@@ -160,6 +166,7 @@ export const EditServiceScreen = () => {
           title: "Error",
           description: response.error.message,
         });
+        navigation.goBack();
       }, 200);
     }
   };

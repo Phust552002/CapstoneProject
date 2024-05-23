@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
   routeContainer: {
     height: isIphoneX() ? 90 : 70,
     flex: 1,
-    // backgroundColor: 'white',
     alignItems: "center",
     paddingTop: 20,
   },
@@ -77,7 +76,6 @@ export const TabBar: React.FC<BottomTabBarProps> = (props) => {
   return (
     <View>
       <View
-        // source={images.logo}
         style={styles.container}
       >
         <TouchableOpacity

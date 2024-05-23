@@ -122,21 +122,11 @@ export const HomeScreen = () => {
       <AppHeader title={""} />
       <AppText style={styles.title}>Công việc đang chạy</AppText>
 
-      {/* <View style={styles.searchContainer}>
-        <Icon name="search" type="feather" color={"black"} size={20} />
-        <TextInput
-          style={styles.exploreSearchInput}
-          placeholder="Search"
-          value={searchText}
-          onChangeText={(text) => setSearchText(text)}
-        />
-      </View> */}
-
       <FlatList
         data={serviceData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <Item item={item} getData={getData} />}
-        contentContainerStyle={{paddingBottom: 100}}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </View>
   );

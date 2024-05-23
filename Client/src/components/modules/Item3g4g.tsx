@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import * as Device from "expo-device";
+import { useTask } from "../../helpers/features/task";
 import { ErrorModal } from "../../components/atoms/ErrorModal";
 import { SuccessModal } from "../atoms/SuccessModal";
-
 
 const data = [
   { label: "TẮT/MỞ NGAY", value: "1" },
@@ -29,8 +29,8 @@ interface Item3g4gProps {
 }
 
 interface ApiResponseState {
-  error?: string; // Optional error message property
-  data?: any; // Placeholder for any potential data received from the API
+  error?: string;
+  data?: any;
 }
 
 export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
@@ -43,10 +43,18 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
   const { showLoading, hideLoading } = useBaseHook();
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [message, setMessage] = useState<{ title: string; description?: string }>();
-  const addSerivce = async () => {
+  const [error, setError] = useState<{ title: string; description?: string }>();
+  const [serviceName, setServiceName] = useState("");
+  const { onAddTask } = useTask();
+  const [note, setNote] = useState("");
+  const [noteError, setNoteError] = useState("");
+  const [message, setMessage] = useState<{
+    title: string;
+    description?: string;
+  }>();
+
+  const addService = async () => {
     showLoading();
-    
     dispatch(
       UserActions.setService3g4g.request({
         time: days,
@@ -54,35 +62,53 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
       })
     );
     try {
-      const response = await fetch('https://neutral-seemingly-shepherd.ngrok-free.app/automate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Phuc gets serviceId from firebase
-        body: JSON.stringify({
-          serviceId: 1, 
-          arguments: Device.manufacturer,
-        }),
-      });
+      const response = await fetch(
+        "https://ideal-noticeably-wasp.ngrok-free.app/automate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            serviceId: 1,
+            arguments: Device.manufacturer,
+          }),
+        }
+      );
       hideLoading();
       const data = await response.json();
       if (data.error == "") {
         setShowSuccess(true);
         setMessage({
           title: "Tự động hóa thành công",
-          description: '3G/4G hiện đã được tắt',
+          description: "3G/4G hiện đã được tắt",
         });
-      }
-      else {
+        setServiceName("3G/4G Service");
+        setNote("Success");
+        setNoteError("");
+
+        await onAddTask({
+          serviceName: "3G/4G Service",
+          state: "Success",
+          error: "",
+        });
+      } else {
         setShowError(true);
         setMessage({
           title: "Tự động hóa thất bại",
           description: data.error,
         });
+        setServiceName("3G/4G Service");
+        setNote("Failure");
+        setNoteError(data.error);
+
+        await onAddTask({
+          serviceName: "3G/4G Service",
+          state: "Failure",
+          error: data.error,
+        });
       }
-    }
-    catch (error) {
+    } catch (error) {
       hideLoading();
       setShowError(true);
       setMessage({
@@ -90,9 +116,13 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
         description: String(error),
       });
       console.error("Error adding service:", error);
-      
+
+      await onAddTask({
+        serviceName: "3G/4G Service",
+        state: "Error",
+        error: String(error),
+      });
     }
-    // navigation.goBack();
   };
 
   useEffect(() => {
@@ -100,7 +130,7 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
       setDays(service.time);
       setSupplier(service.supplier);
     }
-  }, []);
+  }, [service]);
 
   return (
     <View style={styles.fontContainer}>
@@ -123,7 +153,6 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
             setDays(item);
           }}
         />
-    
       </View>
       {isEdit ? (
         <View style={styles.rowContainer}>
@@ -135,7 +164,7 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
               Hủy thay đổi
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => addSerivce()}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => addService()}>
             <AppText white h5>
               Thay đổi
             </AppText>
@@ -151,7 +180,7 @@ export const Item3g4g = ({ isEdit, service }: Item3g4gProps) => {
               HUỶ
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => addSerivce()}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => addService()}>
             <AppText white h5>
               THÊM
             </AppText>

@@ -32,8 +32,11 @@ export const SplashScreen = () => {
             dispatch(AuthenticationActions.setAccountNumber.request("1"))
           }
         >
-          <AppText style={styles.guessLogin}>
-            Đăng nhập với tư cách khách
+          <AppText
+            style={styles.guessLogin}
+            onPress={() => navigation.navigate("Register")}
+          >
+            Đăng ký ngay
           </AppText>
         </TouchableOpacity>
       </View>

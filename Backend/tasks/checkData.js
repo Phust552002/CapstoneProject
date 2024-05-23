@@ -77,6 +77,9 @@ async function check3G() {
                 await mobileToggle.click();
             }
             await driver.pause(1000);
+            await driver.execute('mobile: pressKey', { keycode: 4 });
+            await driver.execute('mobile: pressKey', { keycode: 4 });
+            await driver.execute('mobile: pressKey', { keycode: 4 });
             await driver.terminateApp(appPackage);
         }
     } finally {

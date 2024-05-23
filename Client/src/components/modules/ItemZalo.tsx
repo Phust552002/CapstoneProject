@@ -4,6 +4,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { makeStyles } from "react-native-elements";
 import { HookHelper, Mixin } from "../../helpers";
 import AppText from "../atoms/AppText";
+import { useTask } from "../../helpers/features/task";
 import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
 import { UserActions } from "../../stores/actions";
 import { ErrorModal } from "../../components/atoms/ErrorModal";
@@ -22,8 +23,8 @@ interface ItemZaloProps {
 }
 
 interface ApiResponseState {
-  error?: string; // Optional error message property
-  data?: any; // Placeholder for any potential data received from the API
+  error?: string;
+  data?: any;
 }
 
 export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
@@ -35,27 +36,37 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
   const { showLoading, hideLoading } = useBaseHook();
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [message, setMessage] = useState<{ title: string; description?: string }>();
+  const [error, setError] = useState<{ title: string; description?: string }>();
+  const [serviceName, setServiceName] = useState("");
+  const { onAddTask } = useTask();
+  const [note, setNote] = useState("");
+  const [noteError, setNoteError] = useState("");
+  const [message, setMessage] = useState<{
+    title: string;
+    description?: string;
+  }>();
   const addSerivce = async () => {
     showLoading();
-    
+
     dispatch(
       UserActions.setServiceZalo.request({
         time: days,
       })
     );
     try {
-      const response = await fetch('https://neutral-seemingly-shepherd.ngrok-free.app/automate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Phuc gets serviceId from localstore
-        body: JSON.stringify({
-          serviceId: 2,
-          arguments: "",
-        }),
-      });
+      const response = await fetch(
+        "https://ideal-noticeably-wasp.ngrok-free.app/automate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            serviceId: 2,
+            arguments: "",
+          }),
+        }
+      );
       hideLoading();
 
       const data = await response.json();
@@ -63,19 +74,34 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
         setShowSuccess(true);
         setMessage({
           title: "Tự động hóa thành công",
-          description: 'Bạn đã xóa dữ liệu Cache của Zalo',
+          description: "Bạn đã xóa dữ liệu Cache của Zalo",
         });
-      }
-      else {
+        setServiceName("Delete Zalo Cache Service");
+        setNote("Success");
+        setNoteError("");
+
+        await onAddTask({
+          serviceName: "Delete Zalo Cache Service",
+          state: "Success",
+          error: "",
+        });
+      } else {
         setShowError(true);
         setMessage({
           title: "Tự động hóa thất bại",
           description: data.error,
         });
+        setServiceName("Delete Zalo Cache Service");
+        setNote("Failure");
+        setNoteError(data.error);
+
+        await onAddTask({
+          serviceName: "Delete Zalo Cache Service",
+          state: "Failure",
+          error: data.error,
+        });
       }
-    }
-    
-    catch (error) {
+    } catch (error) {
       hideLoading();
       setShowError(true);
       setMessage({
@@ -83,9 +109,12 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
         description: String(error),
       });
       console.error("Error adding service:", error);
-      
+      await onAddTask({
+        serviceName: "Delete Zalo Cache Service",
+        state: "Error",
+        error: String(error),
+      });
     }
-    // navigation.goBack();
   };
   useEffect(() => {
     if (service) {
@@ -164,9 +193,7 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
           description={message?.description}
         />
       </View>
-      
     </View>
-    
   );
 };
 

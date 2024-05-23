@@ -2,13 +2,12 @@ import {
   ActionReducerMapBuilder,
   createAction,
   createReducer,
-} from '@reduxjs/toolkit';
-// import {IApiResponse} from 'services/BaseApiService';
-import {PayloadAction, AnyAction} from '@reduxjs/toolkit';
+} from "@reduxjs/toolkit";
+import { PayloadAction, AnyAction } from "@reduxjs/toolkit";
 
 export function generateActions<P = void, S = void, F = any>(
   prefix: string,
-  action: string,
+  action: string
 ) {
   const actionName = `${prefix}/${action}`;
   const requestName = `${actionName}_REQUEST`;
@@ -29,7 +28,7 @@ export function generateActions<P = void, S = void, F = any>(
 }
 export function generateLocalAction<P = void>(prefix: string, action: string) {
   const actionName = `${prefix}/${action}`;
-  const request = createAction<P>(actionName + '_LOCAL');
+  const request = createAction<P>(actionName + "_LOCAL");
   return {
     request,
     actionName,
@@ -41,15 +40,15 @@ export interface IBaseReducerState {
 
 export const handleReducerBuilder = (
   state: IBaseReducerState,
-  action: PayloadAction<any> | AnyAction,
+  action: PayloadAction<any> | AnyAction
 ) => {
   state.action = action.type;
 };
 export function createHandleReducer<S extends IBaseReducerState>(
   initialState: S,
-  builderCallback: (builder: ActionReducerMapBuilder<any>) => void,
+  builderCallback: (builder: ActionReducerMapBuilder<any>) => void
 ) {
-  return createReducer(initialState, build => {
+  return createReducer(initialState, (build) => {
     builderCallback(build);
     build.addDefaultCase(handleReducerBuilder);
   });
