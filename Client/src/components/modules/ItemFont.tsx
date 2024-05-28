@@ -5,10 +5,10 @@ import { SliderContainer } from "./SliderContainer";
 import { Slider } from "@miblanchard/react-native-slider";
 import { makeStyles } from "react-native-elements";
 import { useGetNavigation, useBaseHook } from "../../helpers/hookHelper";
+import { useTask } from "../../helpers/features/task";
 import { UserActions } from "../../stores/actions";
 import { useEffect, useState } from "react";
 import * as Device from "expo-device";
-import { useTask } from "../../helpers/features/task";
 import { ErrorModal } from "../atoms/ErrorModal";
 import { SuccessModal } from "../atoms/SuccessModal";
 
@@ -17,8 +17,8 @@ interface ItemFontProps {
   service?: any;
 }
 interface ApiResponseState {
-  error?: string;
-  data?: any;
+  error?: string; // Optional error message property
+  data?: any; // Placeholder for any potential data received from the API
 }
 export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const { theme, dispatch } = HookHelper.useBaseHook();
@@ -34,11 +34,8 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
   const { onAddTask } = useTask();
   const [note, setNote] = useState("");
   const [noteError, setNoteError] = useState("");
-  const [message, setMessage] = useState<{
-    title: string;
-    description?: string;
-  }>();
-  const addSerivce = async () => {
+  const [message, setMessage] = useState<{ title: string; description?: string }>();
+  const addService = async () => {
     showLoading();
     dispatch(
       UserActions.setServiceFont.request({
@@ -46,19 +43,17 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
       })
     );
     try {
-      const response = await fetch(
-        "https://ideal-noticeably-wasp.ngrok-free.app/automate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            serviceId: 3,
-            arguments: Device.manufacturer + " " + size,
-          }),
-        }
-      );
+      const response = await fetch('https://ideal-noticeably-wasp.ngrok-free.app/automate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Phuc gets serviceId from firebase
+        body: JSON.stringify({
+          serviceId: 3, 
+          arguments: Device.manufacturer + " " +  size,
+        }),
+      });      
       hideLoading();
 
       const data = await response.json();
@@ -66,7 +61,7 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         setShowSuccess(true);
         setMessage({
           title: "Tự động hóa thành công",
-          description: "Bạn đã thay đổi cỡ chữ thành công",
+          description: 'Bạn đã thay đổi cỡ chữ thành công',
         });
         setServiceName("Font Editing Service");
         setNote("Success");
@@ -77,7 +72,8 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           state: "Success",
           error: "",
         });
-      } else {
+      }
+      else {
         setShowError(true);
         setMessage({
           title: "Tự động hóa thất bại",
@@ -93,7 +89,8 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           error: data.error,
         });
       }
-    } catch (error) {
+    }
+    catch (error) {
       hideLoading();
       setShowError(true);
       setMessage({
@@ -101,13 +98,13 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         description: String(error),
       });
       console.error("Error adding service:", error);
-
       await onAddTask({
         serviceName: "3G/4G Service",
         state: "Error",
         error: String(error),
       });
     }
+    // navigation.goBack();
   };
 
   return (
@@ -117,13 +114,10 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
           {isEdit ? "Thay đổi" : "Chọn"} cỡ chữ:
         </AppText>
 
-        <SliderContainer
-          sliderValue={[size * 20]}
-          trackMarks={[0, 20, 40, 60, 80, 100]}
-        >
+        <SliderContainer sliderValue={[size*20]} trackMarks={[0, 20, 40, 60,80, 100]}>
           <Slider
             onSlidingComplete={(value) => {
-              const newValue = Math.round(value[0] / 20).toFixed(1);
+              const newValue = (Math.round(value[0] / 20)).toFixed(1); 
               setSize(parseFloat(newValue));
             }}
             maximumValue={100}
@@ -150,7 +144,7 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
               Hủy thay đổi
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => addSerivce()}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => addService()}>
             <AppText white h5>
               Thay đổi
             </AppText>
@@ -166,7 +160,7 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
               HUỶ
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => addSerivce()}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => addService()}>
             <AppText white h5>
               CHỌN
             </AppText>
@@ -190,6 +184,7 @@ export const ItemFont = ({ isEdit, service }: ItemFontProps) => {
         />
       </View>
     </View>
+    
   );
 };
 

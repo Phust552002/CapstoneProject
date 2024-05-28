@@ -23,8 +23,8 @@ interface ItemZaloProps {
 }
 
 interface ApiResponseState {
-  error?: string;
-  data?: any;
+  error?: string; // Optional error message property
+  data?: any; // Placeholder for any potential data received from the API
 }
 
 export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
@@ -41,32 +41,27 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
   const { onAddTask } = useTask();
   const [note, setNote] = useState("");
   const [noteError, setNoteError] = useState("");
-  const [message, setMessage] = useState<{
-    title: string;
-    description?: string;
-  }>();
-  const addSerivce = async () => {
+  const [message, setMessage] = useState<{ title: string; description?: string }>();
+  const addService = async () => {
     showLoading();
-
+    
     dispatch(
       UserActions.setServiceZalo.request({
         time: days,
       })
     );
     try {
-      const response = await fetch(
-        "https://ideal-noticeably-wasp.ngrok-free.app/automate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            serviceId: 2,
-            arguments: "",
-          }),
-        }
-      );
+      const response = await fetch('https://ideal-noticeably-wasp.ngrok-free.app/automate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Phuc gets serviceId from localstore
+        body: JSON.stringify({
+          serviceId: 2,
+          arguments: "",
+        }),
+      });
       hideLoading();
 
       const data = await response.json();
@@ -74,7 +69,7 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
         setShowSuccess(true);
         setMessage({
           title: "Tự động hóa thành công",
-          description: "Bạn đã xóa dữ liệu Cache của Zalo",
+          description: 'Bạn đã xóa dữ liệu Cache của Zalo',
         });
         setServiceName("Delete Zalo Cache Service");
         setNote("Success");
@@ -85,7 +80,8 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
           state: "Success",
           error: "",
         });
-      } else {
+      }
+      else {
         setShowError(true);
         setMessage({
           title: "Tự động hóa thất bại",
@@ -101,7 +97,9 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
           error: data.error,
         });
       }
-    } catch (error) {
+    }
+    
+    catch (error) {
       hideLoading();
       setShowError(true);
       setMessage({
@@ -113,8 +111,9 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
         serviceName: "Delete Zalo Cache Service",
         state: "Error",
         error: String(error),
-      });
+      }); 
     }
+    // navigation.goBack();
   };
   useEffect(() => {
     if (service) {
@@ -154,7 +153,7 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
               Hủy thay đổi
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => addSerivce()}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => addService()}>
             <AppText white h5>
               Thay đổi
             </AppText>
@@ -170,7 +169,7 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
               HUỶ
             </AppText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addBtn} onPress={() => addSerivce()}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => addService()}>
             <AppText white h5>
               THÊM
             </AppText>
@@ -193,7 +192,9 @@ export const ItemZalo = ({ isEdit, service }: ItemZaloProps) => {
           description={message?.description}
         />
       </View>
+      
     </View>
+    
   );
 };
 

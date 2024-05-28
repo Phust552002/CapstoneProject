@@ -17,7 +17,10 @@ export const HomeRoute = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        // initialRouteName="MyQr"
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="TabRoute" component={TabRoute} />
         <Stack.Screen name="AddService" component={AddServiceScreen} />
         <Stack.Screen name="EditService" component={EditServiceScreen} />

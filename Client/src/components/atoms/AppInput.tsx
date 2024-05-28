@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.colors?.white,
     borderRadius: Mixin.moderateSize(8),
     height: Mixin.moderateSize(40),
+    // width: Mixin.moderateSize(343),
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
@@ -85,6 +86,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.colors?.grey3,
   },
   label: {
+    // height: Mixin.moderateSize(38),
     fontSize: Mixin.moderateSize(14),
     flex: 1,
     color: theme.colors?.grey3,

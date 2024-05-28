@@ -12,6 +12,9 @@ export const TabRoute = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        // tabBarBackground: () => (
+        //   <View style={{ backgroundColor: 'transparent', width: '100%' }} />
+        // ),
         tabBarStyle: {
           backgroundColor: "red",
           position: "absolute",

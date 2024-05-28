@@ -49,6 +49,9 @@ export const ProfileScreen = () => {
   };
   return (
     <View style={styles.container}>
+      {/* <AppHeader title={""} />
+      <AppText style={styles.title}>Hệ thống</AppText> */}
+
       <AppButton title="Thoát ứng dụng" onPress={handleExitApp} />
       <AppButton title="Đăng xuất" onPress={handleLogout} />
       <AppButton
@@ -64,4 +67,3 @@ export const ProfileScreen = () => {
     </View>
   );
 };
-F

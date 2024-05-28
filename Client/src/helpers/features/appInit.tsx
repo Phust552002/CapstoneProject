@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export const useAppInIt = () => {
   const [isDone, setIsDone] = useState(false);
+ 
+  
 
-  const initData = async () => {};
+  const initData = async () => {
+   
+  };
   useEffect(() => {
-    setIsDone(true);
+      setIsDone(true);
   }, []);
-  return { isDone, initData };
+  return {isDone, initData};
 };

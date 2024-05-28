@@ -30,6 +30,8 @@ const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: 'trasparent',
     borderBottomWidth: 0,
+    // paddingHorizontal: Mixin.moderateSize(16),
+    // width: device_width,
     zIndex: 9999,
     width: '100%',
     right: 20
@@ -87,6 +89,11 @@ const AppHeader = (props: IHeaderProps) => {
         rightComponent={props.renderRight ? props.renderRight : undefined}
         leftComponent={
           !hideBack ? (
+            // <TouchableOpacity
+            //   style={{justifyContent: 'center', alignItems: 'center'}}
+            //   onPress={onPressLeft ? onPressLeft : () => navigation.goBack()}>
+            //   <Image source={images.backIcon} style={styles.icon} />
+            // </TouchableOpacity>
             <Icon name="chevron-left" size={30} onPress={onPressLeft ? onPressLeft : () => navigation.goBack()} />
           ) : undefined
         }

@@ -1,10 +1,6 @@
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  initializeAuth,
-  getReactNativePersistence,
-} from "firebase/auth";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -13,11 +9,12 @@ const firebaseConfig = {
   projectId: "rpa-project-68789",
   storageBucket: "rpa-project-68789.appspot.com",
   messagingSenderId: "925337931877",
-  appId: "1:925337931877:web:e6b98db96cc2e03739b68c",
+  appId: "1:925337931877:web:e6b98db96cc2e03739b68c"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 export const db = getFirestore(app);
